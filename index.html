@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Universitet arizalari 2027</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Layout: header strip with summary chips, filter bar, then one wide spreadsheet-like table (row = university). */
+:root{
+  --bg:#eef2f8; --surface:#ffffff; --ink:#18212e; --muted:#5d6a7c; --line:#d9dfe7;
+  --accent:#1e4f8a; --accent-ink:#ffffff; --accent-soft:#e3ecf7;
+  --c-yellow:#fbefc0; --c-green:#d3efdc; --c-red:#f8d8d4; --c-blue:#dcebfb;
+  --s-grey:#e6e9ee; --s-grey-ink:#495466;
+  --s-blue:#dbe8fa; --s-blue-ink:#1d4f91;
+  --s-indigo:#e4e1fa; --s-indigo-ink:#463a9e;
+  --s-amber:#fbecc8; --s-amber-ink:#8a5a00;
+  --s-green:#d3efdc; --s-green-ink:#1d6b3b;
+  --s-red:#f8d8d4; --s-red-ink:#9b2c22;
+  --u-red:#d64033; --u-red-soft:#fde4e1; --u-amber:#d98a00; --u-amber-soft:#fff1d0; --u-green:#2f9a5a; --u-green-soft:#ddf4e5; --u-done:#8a95a5;
+  --g-jan:#e2553f; --g-jan-soft:#fde7e2; --g-sep:#2f6fd0; --g-sep-soft:#e2ecfb; --g-res:#169b8a; --g-res-soft:#dcf4f0;
+  --dot:rgba(30,79,138,.16); --blob1:rgba(47,111,208,.30); --blob2:rgba(226,85,63,.24); --blob3:rgba(22,155,138,.26);
+  --band:linear-gradient(90deg,#2f6fd0 0%,#169b8a 55%,#e2553f 100%);
+  --font-display:"Sora", "Segoe UI", system-ui, sans-serif;
+  --font-body:"IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#11161e; --surface:#19202b; --ink:#e7ecf3; --muted:#9aa7b8; --line:#2c3644;
+    --accent:#6ea3e6; --accent-ink:#0d1520; --accent-soft:#1f2c3f;
+    --c-yellow:#4a3f17; --c-green:#1d3a28; --c-red:#4a2420; --c-blue:#1d3048;
+    --s-grey:#2a3240; --s-grey-ink:#c2cad6; --s-blue:#1d3352; --s-blue-ink:#9cc4f4;
+    --s-indigo:#2c2850; --s-indigo-ink:#bcb3f5; --s-amber:#46360f; --s-amber-ink:#f3cc72;
+    --s-green:#1d3a28; --s-green-ink:#8fdcab; --s-red:#4a2420; --s-red-ink:#f3a59c;
+    --u-red:#ff7466; --u-red-soft:#4a2420; --u-amber:#f5b83d; --u-amber-soft:#45360f; --u-green:#5fd38c; --u-green-soft:#1c3a28; --u-done:#7d8898;
+    --dot:rgba(127,176,255,.09); --blob1:rgba(47,111,208,.28); --blob2:rgba(226,85,63,.16); --blob3:rgba(22,155,138,.20);
+    --g-jan:#ff8a73; --g-jan-soft:#47251f; --g-sep:#7fb0ff; --g-sep-soft:#1d2f4b; --g-res:#4fd6c3; --g-res-soft:#173b37;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#11161e; --surface:#19202b; --ink:#e7ecf3; --muted:#9aa7b8; --line:#2c3644;
+  --accent:#6ea3e6; --accent-ink:#0d1520; --accent-soft:#1f2c3f;
+  --c-yellow:#4a3f17; --c-green:#1d3a28; --c-red:#4a2420; --c-blue:#1d3048;
+  --s-grey:#2a3240; --s-grey-ink:#c2cad6; --s-blue:#1d3352; --s-blue-ink:#9cc4f4;
+  --s-indigo:#2c2850; --s-indigo-ink:#bcb3f5; --s-amber:#46360f; --s-amber-ink:#f3cc72;
+  --s-green:#1d3a28; --s-green-ink:#8fdcab; --s-red:#4a2420; --s-red-ink:#f3a59c;
+  --u-red:#ff7466; --u-red-soft:#4a2420; --u-amber:#f5b83d; --u-amber-soft:#45360f; --u-green:#5fd38c; --u-green-soft:#1c3a28; --u-done:#7d8898;
+  --dot:rgba(127,176,255,.09); --blob1:rgba(47,111,208,.28); --blob2:rgba(226,85,63,.16); --blob3:rgba(22,155,138,.20);
+  --g-jan:#ff8a73; --g-jan-soft:#47251f; --g-sep:#7fb0ff; --g-sep-soft:#1d2f4b; --g-res:#4fd6c3; --g-res-soft:#173b37;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{color:var(--ink);font:14px/1.45 var(--font-body);min-height:100%;
+  background-color:var(--bg);
+  background-image:
+    radial-gradient(circle at 1px 1px, var(--dot) 1px, transparent 1.4px),
+    radial-gradient(60rem 40rem at -10% -10%, var(--blob1), transparent 60%),
+    radial-gradient(50rem 36rem at 110% 0%, var(--blob2), transparent 60%),
+    radial-gradient(60rem 40rem at 50% 120%, var(--blob3), transparent 60%);
+  background-size:22px 22px, auto, auto, auto;
+  background-attachment:fixed;}
+html{background:var(--bg)}
+.tablebox,.dcard,.chip,.tabs,.btn:not(.primary):not(.danger){backdrop-filter:blur(2px)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.wrap{padding:20px 16px 40px;display:grid;gap:14px}
+header{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center;justify-content:space-between}
+h1{font-family:var(--font-display);font-size:22px;margin:0;text-wrap:balance;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:13px;margin-top:2px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:6px 10px;font-size:12.5px;display:flex;gap:6px;align-items:baseline}
+.chip b{font-family:var(--font-display);font-size:15px;font-variant-numeric:tabular-nums}
+.chip.next{border-color:var(--u-red);background:var(--u-red-soft)}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.tabs{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface)}
+.tabs button{border:0;background:none;padding:7px 14px;cursor:pointer;border-right:1px solid var(--line)}
+.tabs button:last-child{border-right:0}
+.tabs button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);font-weight:600}
+.btn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:7px 12px;cursor:pointer}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+.btn.danger{background:var(--s-red);color:var(--s-red-ink);border-color:transparent}
+.notice{border-radius:8px;padding:10px 12px;background:var(--s-amber);color:var(--s-amber-ink);font-size:13px}
+.notice[hidden]{display:none}
+.tablebox{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:separate;border-spacing:0;min-width:1760px;width:100%}
+th{position:sticky;top:0;background:var(--surface);text-align:left;font-size:12px;font-weight:600;color:var(--muted);padding:10px;border-bottom:2px solid var(--line);white-space:nowrap}
+td{vertical-align:top;border-bottom:1px solid var(--line);border-right:1px solid var(--line);padding:0}
+td:last-child{border-right:0}
+tr.group-row td{padding:7px 12px;font-family:var(--font-display);font-weight:600;font-size:13px;border-right:0}
+.num{width:58px;text-align:center;padding:10px 6px;color:var(--muted);font-variant-numeric:tabular-nums}
+.del{border:0;background:none;color:var(--s-red-ink);cursor:pointer;font-size:16px;line-height:1;padding:2px 6px;border-radius:4px}
+.del:hover{background:var(--s-red)}
+.uni{padding:10px 12px;min-width:200px}
+.uni a{color:var(--accent);font-weight:600;text-decoration:underline;text-underline-offset:2px}
+.uni .nm{font-weight:600}
+.uni .tag{display:inline-block;margin-top:4px;font-size:11px;padding:1px 7px;border-radius:999px;background:var(--s-grey);color:var(--s-grey-ink);border:0;cursor:pointer}
+.fit{padding:8px;width:104px}
+.fit-stack{display:grid;gap:2px}
+.fit-stack button{border:0;border-radius:3px;font-size:10.5px;padding:2px 0;background:var(--s-grey);color:var(--muted);cursor:pointer}
+.fit-stack button.on[data-v="Ishonchli"]{background:var(--s-green);color:var(--s-green-ink);font-weight:600}
+.fit-stack button.on[data-v="Mos"]{background:var(--s-amber);color:var(--s-amber-ink);font-weight:600}
+.fit-stack button.on[data-v="Qiyin"]{background:var(--s-red);color:var(--s-red-ink);font-weight:600}
+.fit-stack button.on[data-v="Juda qiyin"]{background:var(--s-indigo);color:var(--s-indigo-ink);font-weight:600}
+.dl{padding:10px;min-width:160px}
+.dl input{border:1px solid var(--line);border-radius:6px;padding:4px 6px;background:var(--surface);width:100%;font-variant-numeric:tabular-nums}
+.left{display:block;margin-top:5px;font-size:12px;font-weight:600;font-variant-numeric:tabular-nums}
+.left.soon{color:var(--s-red-ink)} .left.mid{color:var(--s-amber-ink)} .left.ok{color:var(--muted)} .left.past{color:var(--muted);font-weight:400}
+.cell{width:100%;min-height:68px;height:100%;border:0;background:none;text-align:left;padding:10px 12px;cursor:pointer;display:block}
+.cell:hover{box-shadow:inset 0 0 0 2px var(--accent-soft)}
+.cell .txt{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-wrap;word-break:break-word}
+.cell .more{color:var(--accent);font-size:12px;margin-top:3px;display:block}
+.cell .ph{color:var(--muted);font-style:italic}
+td.col-yellow{background:var(--c-yellow)} td.col-green{background:var(--c-green)} td.col-red{background:var(--c-red)} td.col-blue{background:var(--c-blue)}
+.w-grant{min-width:190px}.w-strat{min-width:210px}.w-essay{min-width:200px}.w-estat{min-width:170px}.w-test{min-width:180px}.w-note{min-width:220px}
+.st{padding:10px;min-width:178px}
+.st select{width:100%;border:0;border-radius:999px;padding:5px 10px;font-weight:600;font-size:12.5px;cursor:pointer;appearance:auto}
+.st select[data-v="Topshirilmagan"]{background:var(--s-grey);color:var(--s-grey-ink)}
+.st select[data-v="Jarayonda"]{background:var(--s-blue);color:var(--s-blue-ink)}
+.st select[data-v="Topshirildi"]{background:var(--s-indigo);color:var(--s-indigo-ink)}
+.st select[data-v="Javob kutilmoqda"]{background:var(--s-amber);color:var(--s-amber-ink)}
+.st select[data-v="Qabul"]{background:var(--s-green);color:var(--s-green-ink)}
+.st select[data-v="Rad"]{background:var(--s-red);color:var(--s-red-ink)}
+.empty{padding:28px;text-align:center;color:var(--muted)}
+/* dialog */
+.scrim{position:fixed;inset:0;background:rgba(10,16,24,.45);display:flex;align-items:flex-start;justify-content:center;padding:60px 16px;z-index:10}
+.scrim[hidden]{display:none}
+.dlg{background:var(--surface);border-radius:12px;width:min(560px,100%);padding:18px;display:grid;gap:12px;box-shadow:0 12px 40px rgba(0,0,0,.25)}
+.dlg h2{font-family:var(--font-display);font-size:16px;margin:0}
+.dlg label{display:grid;gap:4px;font-size:12.5px;color:var(--muted)}
+.dlg textarea,.dlg input,.dlg select{border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--bg);color:var(--ink);width:100%}
+.dlg textarea{min-height:150px;resize:vertical}
+.swatches{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.sw{width:28px;height:28px;border-radius:6px;border:2px solid var(--line);cursor:pointer}
+.sw[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.sw[data-c=""]{background:var(--surface)} .sw[data-c="yellow"]{background:var(--c-yellow)} .sw[data-c="green"]{background:var(--c-green)} .sw[data-c="red"]{background:var(--c-red)} .sw[data-c="blue"]{background:var(--c-blue)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.err{color:var(--s-red-ink);font-size:12.5px;min-height:1em}
+
+.band{height:6px;border-radius:999px;background:var(--band)}
+/* deadline strip */
+.dl-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px}
+.dl-head h2{font-family:var(--font-display);font-size:15px;margin:0}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
+.dcard{border:0;text-align:left;cursor:pointer;border-radius:12px;padding:12px 14px;background:var(--surface);border-left:6px solid var(--u-green);box-shadow:0 1px 0 var(--line), 0 0 0 1px var(--line) inset;display:grid;gap:4px}
+.dcard:hover{transform:translateY(-1px)}
+.dcard .days{font-family:var(--font-display);font-size:30px;font-weight:700;line-height:1;font-variant-numeric:tabular-nums}
+.dcard .days small{font-size:13px;font-weight:600;margin-left:4px}
+.dcard .nm{font-weight:600;line-height:1.3}
+.dcard .meta{font-size:12px;color:var(--muted)}
+.dcard.red{border-left-color:var(--u-red);background:var(--u-red-soft)} .dcard.red .days{color:var(--u-red)}
+.dcard.amber{border-left-color:var(--u-amber);background:var(--u-amber-soft)} .dcard.amber .days{color:var(--u-amber)}
+.dcard.green .days{color:var(--u-green)}
+.strip .none{color:var(--muted);font-size:13px;padding:6px 2px}
+/* row urgency stripe + deadline badge */
+tr[data-urg] td.num{box-shadow:inset 5px 0 0 var(--u-done)}
+tr[data-urg="red"] td.num{box-shadow:inset 5px 0 0 var(--u-red)}
+tr[data-urg="amber"] td.num{box-shadow:inset 5px 0 0 var(--u-amber)}
+tr[data-urg="green"] td.num{box-shadow:inset 5px 0 0 var(--u-green)}
+tr[data-urg="red"] td.dl{background:var(--u-red-soft)}
+tr[data-urg="amber"] td.dl{background:var(--u-amber-soft)}
+.dl .big{font-family:var(--font-display);font-weight:600;font-size:14px;font-variant-numeric:tabular-nums;display:block;margin-bottom:5px}
+.badge{display:inline-block;margin-top:6px;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
+.badge.red{background:var(--u-red);color:#fff} .badge.amber{background:var(--u-amber);color:#1d1400} .badge.green{background:var(--u-green-soft);color:var(--u-green)}
+.badge.done{background:var(--s-grey);color:var(--s-grey-ink);font-weight:600} .badge.past{background:var(--s-grey);color:var(--muted);font-weight:500}
+tr.flash td{animation:flash 1.6s ease}
+@keyframes flash{0%,40%{background:var(--accent-soft)}}
+/* group colors */
+tr.group-row td{letter-spacing:.02em;border-left:6px solid var(--g-sep)}
+tr.group-row[data-g="Yanvar 2027"] td{background:var(--g-jan-soft);border-left-color:var(--g-jan);color:var(--g-jan)}
+tr.group-row[data-g="Sentabr 2027"] td{background:var(--g-sep-soft);border-left-color:var(--g-sep);color:var(--g-sep)}
+tr.group-row[data-g="Zaxira"] td{background:var(--g-res-soft);border-left-color:var(--g-res);color:var(--g-res)}
+.uni .tag[data-g="Yanvar 2027"]{background:var(--g-jan-soft);color:var(--g-jan)}
+.uni .tag[data-g="Sentabr 2027"]{background:var(--g-sep-soft);color:var(--g-sep)}
+.uni .tag[data-g="Zaxira"]{background:var(--g-res-soft);color:var(--g-res)}
+.tabs button[data-g="Yanvar 2027"][aria-pressed="true"]{background:var(--g-jan);color:#fff}
+.tabs button[data-g="Sentabr 2027"][aria-pressed="true"]{background:var(--g-sep);color:#fff}
+.tabs button[data-g="Zaxira"][aria-pressed="true"]{background:var(--g-res);color:#fff}
+.dcard .gt{font-size:11px;font-weight:600}
+.dcard .gt[data-g="Yanvar 2027"]{color:var(--g-jan)} .dcard .gt[data-g="Sentabr 2027"]{color:var(--g-sep)} .dcard .gt[data-g="Zaxira"]{color:var(--g-res)}
+@media (prefers-reduced-motion: reduce){tr.flash td{animation:none}.dcard:hover{transform:none}}
+/* read-only view */
+.ro .del,.ro .tag{pointer-events:none}
+.ro .fit-stack button,.ro .st select,.ro .dl input{pointer-events:none}
+.ro .dl input{border-color:transparent;background:transparent;padding-left:0}
+.ro .st select{appearance:none;-webkit-appearance:none;text-align:center}
+.ro .del{display:none}
+.ro .cell{cursor:default}
+.ro .cell:hover{box-shadow:none}
+.ro .cell .txt{-webkit-line-clamp:unset;display:block}
+.ro .cell .more{display:none}
+.updated{color:var(--muted);font-size:12px}
+@media (max-width:420px){.row2{grid-template-columns:1fr}}
+@media (prefers-reduced-motion: reduce){*{transition:none!important}}
+</style>
+</head>
+<body class="ro">
+<div class="wrap">
+  <div class="band" aria-hidden="true"></div>
+  <header>
+    <div>
+      <h1>Universitet arizalari 2027</h1>
+      <div class="updated">Yangilangan: 08.11.2026 · Faqat ko'rish uchun</div>
+    </div>
+    <div class="chips" id="chips"></div>
+  </header>
+
+  <div class="notice" id="notice" hidden></div>
+
+  <section aria-labelledby="dlTitle" style="display:grid;gap:10px">
+    <div class="dl-head">
+      <h2 id="dlTitle">Yaqinlashayotgan muddatlar</h2>
+      <div class="legend"><span><i style="background:var(--u-red)"></i>14 kun va kamroq</span><span><i style="background:var(--u-amber)"></i>15–45 kun</span><span><i style="background:var(--u-green)"></i>45 kundan ko'p</span><span><i style="background:var(--u-done)"></i>Topshirilgan yoki o'tgan</span></div>
+    </div>
+    <div class="strip" id="strip"><div class="none">Yuklanmoqda…</div></div>
+  </section>
+
+  <div class="bar">
+    <div class="tabs" role="group" aria-label="Guruh bo'yicha filtr" id="tabs">
+      <button type="button" data-g="all" aria-pressed="true">Hammasi</button>
+      <button type="button" data-g="Yanvar 2027">Yanvar 2027</button>
+      <button type="button" data-g="Sentabr 2027">Sentabr 2027</button>
+      <button type="button" data-g="Zaxira">Zaxira</button>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button type="button" class="btn" id="sortBtn">Muddat bo'yicha saralash</button>
+      <button type="button" class="btn primary" id="addBtn" hidden>+</button>
+    </div>
+  </div>
+
+  <div class="tablebox">
+    <table>
+      <thead><tr>
+        <th>#</th><th>Universitet</th><th>Imkoniyat</th><th>Grant</th><th>Oxirgi muddat</th>
+        <th>Muddat strategiyasi</th><th>Insholar va savollar</th><th>Insho holati</th>
+        <th>Test talabi</th><th>Holat</th><th>Izoh</th>
+      </tr></thead>
+      <tbody id="tbody"><tr><td colspan="11" class="empty">Yuklanmoqda…</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- text cell editor -->
+<div class="scrim" id="editScrim" hidden>
+  <div class="dlg" role="dialog" aria-modal="true" aria-labelledby="editTitle">
+    <h2 id="editTitle">Tahrirlash</h2>
+    <label for="editText">Matn<textarea id="editText"></textarea></label>
+    <div class="swatches" id="editSw" aria-label="Katak rangi">
+      <span style="font-size:12.5px;color:var(--muted)">Katak rangi:</span>
+      <button type="button" class="sw" data-c="" title="Rangsiz" aria-label="Rangsiz"></button>
+      <button type="button" class="sw" data-c="yellow" title="Sariq: e'tibor kerak" aria-label="Sariq"></button>
+      <button type="button" class="sw" data-c="green" title="Yashil: tayyor" aria-label="Yashil"></button>
+      <button type="button" class="sw" data-c="red" title="Qizil: muammo" aria-label="Qizil"></button>
+      <button type="button" class="sw" data-c="blue" title="Ko'k: ma'lumot" aria-label="Ko'k"></button>
+    </div>
+    <div class="err" id="editErr"></div>
+    <div class="actions">
+      <button type="button" class="btn" id="editCancel">Bekor qilish</button>
+      <button type="button" class="btn primary" id="editSave">Saqlash</button>
+    </div>
+  </div>
+</div>
+
+<!-- add / edit university -->
+<div class="scrim" id="uniScrim" hidden>
+  <form class="dlg" role="dialog" aria-modal="true" aria-labelledby="uniTitle" id="uniForm">
+    <h2 id="uniTitle">Universitet qo'shish</h2>
+    <label for="fName">Nomi<input id="fName" required></label>
+    <label for="fUrl">Sayt (https://…)<input id="fUrl" type="url" placeholder="https://"></label>
+    <div class="row2">
+      <label for="fGroup">Guruh<select id="fGroup"><option>Yanvar 2027</option><option selected>Sentabr 2027</option><option>Zaxira</option></select></label>
+      <label for="fDeadline">Oxirgi muddat<input id="fDeadline" type="date"></label>
+    </div>
+    <label for="fGrant">Grant<input id="fGrant" placeholder="Masalan: to'liq grant"></label>
+    <div class="err" id="uniErr"></div>
+    <div class="actions">
+      <button type="button" class="btn" id="uniCancel">Bekor qilish</button>
+      <button type="submit" class="btn primary" id="uniSave">Saqlash</button>
+    </div>
+  </form>
+</div>
+
+<!-- delete confirm -->
+<div class="scrim" id="delScrim" hidden>
+  <div class="dlg" role="dialog" aria-modal="true" aria-labelledby="delTitle">
+    <h2 id="delTitle">O'chirish</h2>
+    <p id="delText" style="margin:0"></p>
+    <div class="err" id="delErr"></div>
+    <div class="actions">
+      <button type="button" class="btn" id="delCancel">Yo'q</button>
+      <button type="button" class="btn danger" id="delOk">Ha, o'chirish</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const STATUSES=["Topshirilmagan","Jarayonda","Topshirildi","Javob kutilmoqda","Qabul","Rad"];
+  const FITS=["Ishonchli","Mos","Qiyin","Juda qiyin"];
+  const GROUPS=["Yanvar 2027","Sentabr 2027","Zaxira"];
+  const TEXT_COLS=[
+    {f:"grant",cls:"w-grant",label:"Grant"},
+    null, // deadline slot
+    {f:"strategy",cls:"w-strat",label:"Muddat strategiyasi"},
+    {f:"essays",cls:"w-essay",label:"Insholar va savollar"},
+    {f:"essayStatus",cls:"w-estat",label:"Insho holati"},
+    {f:"tests",cls:"w-test",label:"Test talabi"}
+  ];
+  let db=null, rows=[], filter="all", sortByDate=true, loaded=false;
+  const tbody=document.getElementById("tbody");
+  const notice=document.getElementById("notice");
+  const esc=s=>String(s==null?"":s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const safeUrl=u=>/^https?:\/\//i.test(u||"")?u:"";
+  function showNotice(t){notice.textContent=t;notice.hidden=!t;}
+
+  function daysLeft(d){
+    if(!d) return null;
+    const t=new Date(d+"T23:59:00"); if(isNaN(t)) return null;
+    const now=new Date(); return Math.ceil((t-now)/86400000);
+  }
+  const DONE=["Topshirildi","Javob kutilmoqda","Qabul","Rad"];
+  function urg(r){
+    if(DONE.includes(r.status)) return "done";
+    const n=daysLeft(r.deadline); if(n===null) return ""; if(n<0) return "past";
+    return n<=14?"red":n<=45?"amber":"green";
+  }
+  function badgeHtml(r){
+    const u=urg(r), n=daysLeft(r.deadline);
+    if(u==="done") return '<span class="badge done">'+esc(r.status)+'</span>';
+    if(u==="past") return '<span class="badge past">Muddat o\'tgan</span>';
+    if(!u) return "";
+    return '<span class="badge '+u+'">'+(n===0?"Bugun!":n+" kun qoldi")+'</span>';
+  }
+  function renderStrip(){
+    const el=document.getElementById("strip");
+    if(!loaded){return;}
+    const up=rows.filter(r=>["red","amber","green"].includes(urg(r))).sort((a,b)=>a.deadline<b.deadline?-1:1).slice(0,6);
+    if(!up.length){el.innerHTML='<div class="none">Oldinda muddat yo\'q. Universitetlarga muddat qo\'shing.</div>';return;}
+    el.innerHTML=up.map(r=>{const n=daysLeft(r.deadline),u=urg(r);
+      return '<button type="button" class="dcard '+u+'" data-jump="'+esc(r.id)+'"><span class="days">'+(n===0?"Bugun":n)+(n===0?"":'<small>kun</small>')+'</span><span class="nm">'+esc(r.name)+'</span><span class="meta">'+esc(fmtDate(r.deadline))+' · <span class="gt" data-g="'+esc(r.group)+'">'+esc(r.group)+'</span></span></button>';}).join("");
+  }
+  document.getElementById("strip").addEventListener("click",e=>{
+    const b=e.target.closest("[data-jump]"); if(!b) return;
+    const r=get(b.dataset.jump); if(r&&filter!=="all"&&r.group!==filter){filter="all";document.querySelectorAll("#tabs button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.g==="all"));render();}
+    const tr=tbody.querySelector('tr[data-id="'+CSS.escape(b.dataset.jump)+'"]'); if(!tr) return;
+    tr.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"center"});
+    tr.classList.remove("flash"); void tr.offsetWidth; tr.classList.add("flash");
+  });
+  function leftHtml(d){
+    const n=daysLeft(d); if(n===null) return "";
+    if(n<0) return '<span class="left past">Muddat o\'tgan</span>';
+    const cls=n<=14?"soon":n<=45?"mid":"ok";
+    return '<span class="left '+cls+'">'+(n===0?"Bugun!":n+" kun qoldi")+'</span>';
+  }
+  function fmtDate(d){
+    if(!d) return ""; const t=new Date(d+"T00:00:00"); if(isNaN(t)) return d;
+    const m=["yan","fev","mar","apr","may","iyun","iyul","avg","sen","okt","noy","dek"];
+    return t.getDate()+"-"+m[t.getMonth()]+" "+t.getFullYear();
+  }
+
+  // ---- write queue: one write at a time per doc ----
+  const queues={};
+  function write(id,patch){
+    const prev=queues[id]||Promise.resolve();
+    const p=prev.catch(()=>{}).then(()=>db.collection("unis").doc(id).update(patch));
+    queues[id]=p;
+    p.catch(e=>showNotice("Saqlab bo'lmadi: "+((e&&e.code)||"xato")+". Qayta urinib ko'ring."));
+    return p;
+  }
+
+  function render(){
+    renderChips(); renderStrip();
+    if(!loaded) return;
+    let list=rows.filter(r=>filter==="all"||r.group===filter);
+    if(!list.length){
+      tbody.innerHTML='<tr><td colspan="11" class="empty">'+(rows.length?"Bu guruhda universitet yo'q.":"Hali universitet qo'shilmagan. Yuqoridagi \"+ Universitet qo'shish\" tugmasini bosing.")+'</td></tr>';
+      return;
+    }
+    const sorter=(a,b)=>{
+      if(sortByDate){const x=a.deadline||"9999",y=b.deadline||"9999"; if(x!==y) return x<y?-1:1;}
+      return (a.order||0)-(b.order||0);
+    };
+    let html="", n=0;
+    const groups=filter==="all"?GROUPS:[filter];
+    groups.forEach(g=>{
+      const gl=list.filter(r=>(r.group||"Sentabr 2027")===g).sort(sorter);
+      if(!gl.length) return;
+      html+='<tr class="group-row" data-g="'+esc(g)+'"><td colspan="11">'+esc(g)+' · '+gl.length+'</td></tr>';
+      gl.forEach(r=>{ n++; html+=rowHtml(r,n); });
+    });
+    tbody.innerHTML=html;
+  }
+
+  function textCell(r,c){
+    const v=r[c.f]||"", col=r[c.f+"Color"]||"";
+    const long=v.length>110||v.split("\n").length>3;
+    return '<td class="'+c.cls+(col?" col-"+esc(col):"")+'"><button type="button" class="cell" data-edit="'+c.f+'" data-id="'+esc(r.id)+'" aria-label="'+esc(c.label)+' — tahrirlash">'+
+      (v?'<span class="txt">'+esc(v)+'</span>'+(long?'<span class="more">Batafsil</span>':""):'<span class="ph">—</span>')+'</button></td>';
+  }
+
+  function rowHtml(r,n){
+    const url=safeUrl(r.url);
+    const u=urg(r); let h='<tr data-id="'+esc(r.id)+'"'+(u?' data-urg="'+u+'"':'')+'>';
+    h+='<td class="num">'+n+'<br><button type="button" class="del" data-del="'+esc(r.id)+'" aria-label="'+esc(r.name)+' ni o\'chirish">×</button></td>';
+    h+='<td class="uni">'+(url?'<a href="'+esc(url)+'" target="_blank" rel="noopener">'+esc(r.name)+'</a>':'<span class="nm">'+esc(r.name)+'</span>')+
+       '<br><button type="button" class="tag" data-g="'+esc(r.group||"Sentabr 2027")+'" data-group="'+esc(r.id)+'" title="Guruhni almashtirish">'+esc(r.group||"Sentabr 2027")+'</button></td>';
+    h+='<td class="fit"><div class="fit-stack">'+FITS.map(f=>'<button type="button" data-fit="'+f+'" data-id="'+esc(r.id)+'" data-v="'+f+'" class="'+(r.fit===f?"on":"")+'" aria-pressed="'+(r.fit===f)+'">'+f+'</button>').join("")+'</div></td>';
+    h+=textCell(r,TEXT_COLS[0]);
+    h+='<td class="dl"><label class="sr" style="position:absolute;left:-9999px" for="d-'+esc(r.id)+'">Muddat</label><input type="date" id="d-'+esc(r.id)+'" data-date="'+esc(r.id)+'" value="'+esc(r.deadline||"")+'"><br>'+badgeHtml(r)+'</td>';
+    for(let i=2;i<TEXT_COLS.length;i++) h+=textCell(r,TEXT_COLS[i]);
+    const st=STATUSES.includes(r.status)?r.status:"Topshirilmagan";
+    h+='<td class="st"><select data-status="'+esc(r.id)+'" data-v="'+esc(st)+'" aria-label="Holat">'+STATUSES.map(s=>'<option'+(s===st?" selected":"")+'>'+s+'</option>').join("")+'</select></td>';
+    h+=textCell(r,{f:"notes",cls:"w-note",label:"Izoh"});
+    return h+'</tr>';
+  }
+
+  function renderChips(){
+    const el=document.getElementById("chips");
+    if(!loaded){el.innerHTML="";return;}
+    const c={}; STATUSES.forEach(s=>c[s]=0); rows.forEach(r=>{c[STATUSES.includes(r.status)?r.status:"Topshirilmagan"]++;});
+    const up=rows.filter(r=>r.status!=="Topshirildi"&&r.status!=="Qabul"&&r.status!=="Rad"&&r.status!=="Javob kutilmoqda"&&daysLeft(r.deadline)!==null&&daysLeft(r.deadline)>=0)
+      .sort((a,b)=>a.deadline<b.deadline?-1:1)[0];
+    let h='<div class="chip"><b>'+rows.length+'</b> universitet</div>';
+    h+='<div class="chip"><b>'+(c["Topshirildi"]+c["Javob kutilmoqda"])+'</b> topshirildi</div>';
+    h+='<div class="chip"><b>'+c["Qabul"]+'</b> qabul</div>';
+    if(up) h+='<div class="chip next">Keyingi muddat: <b>'+esc(up.name)+'</b> · '+esc(fmtDate(up.deadline))+' ('+daysLeft(up.deadline)+' kun)</div>';
+    el.innerHTML=h;
+  }
+
+  // ---- events ----
+  tbody.addEventListener("click",e=>{
+    const b=e.target.closest("button"); if(!b||!db) return;
+    if(b.dataset.edit) openEdit(b.dataset.id,b.dataset.edit);
+    else if(b.dataset.fit){const r=get(b.dataset.id); const v=r.fit===b.dataset.fit?"":b.dataset.fit; r.fit=v; render(); write(r.id,{fit:v});}
+    else if(b.dataset.del) openDel(b.dataset.del);
+    else if(b.dataset.group){const r=get(b.dataset.group); const g=GROUPS[(GROUPS.indexOf(r.group)+1)%GROUPS.length]; r.group=g; render(); write(r.id,{group:g});}
+  });
+  tbody.addEventListener("change",e=>{
+    const t=e.target; if(!db||!t.dataset) return;
+    if(t.dataset.status){const r=get(t.dataset.status); r.status=t.value; render(); write(r.id,{status:t.value});}
+    else if(t.dataset.date){const r=get(t.dataset.date); if(r.deadline===t.value) return; r.deadline=t.value; render(); write(r.id,{deadline:t.value});}
+  });
+  const get=id=>rows.find(r=>r.id===id);
+
+  document.getElementById("tabs").addEventListener("click",e=>{
+    const b=e.target.closest("button"); if(!b) return;
+    filter=b.dataset.g;
+    document.querySelectorAll("#tabs button").forEach(x=>x.setAttribute("aria-pressed",x===b));
+    render();
+  });
+  const sortBtn=document.getElementById("sortBtn");
+  sortBtn.addEventListener("click",()=>{sortByDate=!sortByDate; sortBtn.textContent=sortByDate?"Muddat bo'yicha saralash":"Qo'shilgan tartibda"; render();});
+
+  // edit dialog
+  const eS=document.getElementById("editScrim"), eT=document.getElementById("editText"), eErr=document.getElementById("editErr");
+  let editing=null, editColor="";
+  function openEdit(id,f){
+    const r=get(id); if(!r) return;
+    editing={id,f}; editColor=r[f+"Color"]||"";
+    const labels={grant:"Grant",strategy:"Muddat strategiyasi",essays:"Insholar va savollar",essayStatus:"Insho holati",tests:"Test talabi",notes:"Izoh"};
+    document.getElementById("editTitle").textContent=r.name+" — "+(labels[f]||f);
+    eT.value=r[f]||""; eErr.textContent="";
+    syncSw(); eS.hidden=false; eT.focus();
+  }
+  function syncSw(){document.querySelectorAll("#editSw .sw").forEach(s=>s.setAttribute("aria-pressed",s.dataset.c===editColor));}
+  document.getElementById("editSw").addEventListener("click",e=>{const s=e.target.closest(".sw"); if(!s) return; editColor=s.dataset.c; syncSw();});
+  function closeEdit(){eS.hidden=true; editing=null;}
+  document.getElementById("editCancel").onclick=closeEdit;
+  document.getElementById("editSave").onclick=async()=>{
+    if(!editing) return; const r=get(editing.id); if(!r){closeEdit();return;}
+    const patch={}; const v=eT.value;
+    if((r[editing.f]||"")!==v) patch[editing.f]=v;
+    if((r[editing.f+"Color"]||"")!==editColor) patch[editing.f+"Color"]=editColor;
+    if(!Object.keys(patch).length){closeEdit();return;}
+    Object.assign(r,patch); render(); const id=editing.id; closeEdit();
+    try{await write(id,patch);}catch(e){}
+  };
+
+  // add dialog
+  const uS=document.getElementById("uniScrim"), uErr=document.getElementById("uniErr");
+  document.getElementById("addBtn").onclick=()=>{ if(!db){showNotice("Saqlash hozir ishlamayapti, shuning uchun qo'shib bo'lmaydi.");return;} document.getElementById("uniForm").reset(); uErr.textContent=""; uS.hidden=false; document.getElementById("fName").focus(); };
+  document.getElementById("uniCancel").onclick=()=>{uS.hidden=true;};
+  document.getElementById("uniForm").addEventListener("submit",async e=>{
+    e.preventDefault();
+    const name=document.getElementById("fName").value.trim(); if(!name){uErr.textContent="Nomini kiriting.";return;}
+    const url=document.getElementById("fUrl").value.trim();
+    const data={name,url:safeUrl(url),group:document.getElementById("fGroup").value,deadline:document.getElementById("fDeadline").value,
+      grant:document.getElementById("fGrant").value.trim(),fit:"",strategy:"",essays:"",essayStatus:"",tests:"",notes:"",status:"Topshirilmagan",
+      order:rows.reduce((m,r)=>Math.max(m,r.order||0),0)+1};
+    const btn=document.getElementById("uniSave"); btn.disabled=true;
+    try{await db.collection("unis").add(data); uS.hidden=true;}
+    catch(err){uErr.textContent="Qo'shib bo'lmadi ("+((err&&err.code)||"xato")+").";}
+    finally{btn.disabled=false;}
+  });
+
+  // delete dialog
+  const dS=document.getElementById("delScrim"); let delId=null;
+  function openDel(id){const r=get(id); if(!r) return; delId=id; document.getElementById("delText").textContent=r.name+" ro'yxatdan o'chirilsinmi? Bu qatordagi barcha yozuvlar ham o'chadi."; document.getElementById("delErr").textContent=""; dS.hidden=false;}
+  document.getElementById("delCancel").onclick=()=>{dS.hidden=true;};
+  document.getElementById("delOk").onclick=async()=>{
+    if(!delId) return;
+    try{await db.collection("unis").doc(delId).delete(); dS.hidden=true;}
+    catch(err){document.getElementById("delErr").textContent="O'chirib bo'lmadi ("+((err&&err.code)||"xato")+").";}
+  };
+  document.addEventListener("keydown",e=>{if(e.key==="Escape"){eS.hidden=true;uS.hidden=true;dS.hidden=true;}});
+
+  // ---- data (static, read-only) ----
+  const DATA=[{"id": "aus", "deadline": "2026-12-24", "essayStatus": "", "essays": "", "fit": "Qiyin", "grant": "President Scholarship: 100% o'qish va lab to'lovi, oylik stipendiya, yotoqxona", "group": "Yanvar 2027", "name": "American University of Sharjah (AUS)", "notes": "8-noyabr: InfoDesk orqali so'rov yuborildi (ticket #398087), holati Open. Javob odatda 2 ish kunida keladi (AUS dushanba–payshanba ishlaydi). Ariza hali topshirilmagan.", "notesColor": "green", "order": 1, "status": "Jarayonda", "strategy": "Hujjatlarni 21-dekabrgacha to'liq topshirish. Darslar 11-yanvarda boshlanadi.", "strategyColor": "yellow", "tests": "SAT 1400+, IELTS 7.0 yoki TOEFL 94. Attestat 98%+ (sizda 99.6%).", "testsColor": "yellow", "url": "https://www.aus.edu"}, {"id": "dgist", "deadline": "2027-01-28", "essayStatus": "", "essays": "", "fit": "Mos", "grant": "8 semestr o'qish puli va stipendiya", "group": "Sentabr 2027", "name": "DGIST", "notes": "O'rta maktab diplomi talab qilinadi.", "order": 5, "status": "Topshirilmagan", "strategy": "", "tests": "", "url": "https://www.dgist.ac.kr/iuadm/"}, {"id": "hungary", "deadline": "2027-01-15", "essayStatus": "", "essays": "Motivatsion xat", "fit": "Mos", "grant": "Full ride", "group": "Zaxira", "name": "Stipendium Hungaricum (Pécs, BME va boshq.)", "notes": "O'zbekiston hamkor davlat ekanini tekshirish kerak.", "order": 9, "status": "Topshirilmagan", "strategy": "Kutilayotgan muddat: 15-yanvar, 14:00 CET.", "tests": "", "url": "https://stipendiumhungaricum.hu"}, {"id": "kaist", "deadline": "2027-01-14", "essayStatus": "", "essays": "", "fit": "Qiyin", "grant": "Full ride", "group": "Sentabr 2027", "name": "KAIST", "notes": "Attestat bilan topshiriladi.", "order": 3, "status": "Topshirilmagan", "strategy": "Ariza 10-noyabrda ochiladi. Regular round faqat 2027 kuzi uchun.", "tests": "Ingliz tili isboti kerak", "url": "https://admission.kaist.ac.kr/intl-undergraduate/"}, {"id": "khalifa", "deadline": "", "essayStatus": "", "essays": "", "fit": "Mos", "grant": "O'qish pulining 100% igacha", "group": "Sentabr 2027", "name": "Khalifa University", "notes": "Stipendiya qabul arizasi bilan avtomatik ko'rib chiqiladi.", "order": 7, "status": "Topshirilmagan", "strategy": "Muddatni saytdan tekshirish kerak.", "strategyColor": "yellow", "tests": "IELTS 6.5 yoki TOEFL 90 (taxminan)", "url": "https://www.ku.ac.ae"}, {"id": "mbzuai", "deadline": "2027-02-01", "essayStatus": "", "essays": "", "fit": "Qiyin", "grant": "Tahnoon bin Zayed Scholarship: 4 yil o'qish puli va moliyaviy yordam", "group": "Sentabr 2027", "name": "MBZUAI", "notes": "Sun'iy intellekt (AI) bakalavriati, Abu Dabi.", "order": 6, "status": "Topshirilmagan", "strategy": "Regular Decision. Bir siklda faqat bitta ariza.", "tests": "IELTS 6.5 yoki TOEFL 90 (taxminan)", "url": "https://mbzuai.ac.ae"}, {"id": "nyuad", "deadline": "2027-01-05", "essayStatus": "", "essays": "Common App personal essay + NYUAD qo'shimcha savollari", "fit": "Juda qiyin", "grant": "To'liq ehtiyoj qoplanadi (need-based)", "group": "Sentabr 2027", "name": "NYU Abu Dhabi", "notes": "", "order": 2, "status": "Topshirilmagan", "strategy": "ED II: 1-yanvar (majburiy, natija 15-fevral). RD: 5-yanvar. CSS Profile: ED II 10-yanvar, RD 1-fevral.", "tests": "SAT ixtiyoriy. Duolingo 120. BTEC Extended Diploma qabul qilinadi.", "url": "https://nyuad.nyu.edu"}, {"id": "pdp", "deadline": "", "essayStatus": "", "essays": "", "fit": "Ishonchli", "grant": "Qisman yoki to'lovli", "group": "Zaxira", "name": "PDP University", "notes": "Zaxira. BTEC ro'yxatida bor. IT yo'nalishi kuchli.", "order": 13, "status": "Topshirilmagan", "strategy": "Qabul muddatlarini saytdan tekshirish kerak.", "strategyColor": "yellow", "tests": "", "url": ""}, {"id": "turin", "deadline": "", "essayStatus": "", "essays": "", "fit": "Ishonchli", "grant": "Qisman yoki to'lovli", "group": "Zaxira", "name": "Turin Polytechnic University in Tashkent", "notes": "Zaxira. BTEC ro'yxatida bor.", "order": 12, "status": "Topshirilmagan", "strategy": "Qabul muddatlarini saytdan tekshirish kerak.", "strategyColor": "yellow", "tests": "", "url": ""}, {"id": "turkiye", "deadline": "2027-02-20", "essayStatus": "", "essays": "Motivatsion xat", "fit": "Mos", "grant": "Full ride: o'qish, stipendiya, yotoqxona, chipta", "group": "Zaxira", "name": "Türkiye Bursları", "notes": "Turk tili kursi bilan.", "order": 8, "status": "Topshirilmagan", "strategy": "Kutilayotgan muddat: ~10-yanvar – 20-fevral. 12 tagacha universitet tanlash mumkin.", "tests": "IELTS majburiy emas", "url": "https://www.turkiyeburslari.gov.tr"}, {"id": "unist", "deadline": "2027-01-22", "essayStatus": "", "essays": "", "fit": "Mos", "grant": "Scholarship track: o'qish puli (GPA'ga bog'liq)", "group": "Sentabr 2027", "name": "UNIST", "notes": "Engineering yoki business yo'nalishlari.", "order": 4, "status": "Topshirilmagan", "strategy": "Study in Korea orqali, 2-dekabrda ochiladi.", "tests": "Ingliz tili isboti kerak", "url": "https://www.unist.ac.kr"}, {"id": "vanderbilt", "deadline": "2026-12-01", "essayStatus": "", "essays": "Common App + stipendiya insholari", "fit": "Juda qiyin", "grant": "Full tuition", "group": "Zaxira", "name": "Vanderbilt (Cornelius Vanderbilt)", "notes": "Chet elliklar uchun need-aware.", "order": 10, "status": "Topshirilmagan", "strategy": "Stipendiya arizasi 1-dekabr, qabul arizasi (RD) 1-yanvar. Avval Common App'da qabul arizasini topshirish kerak.", "strategyColor": "red", "tests": "", "url": "https://admissions.vanderbilt.edu"}];
+  rows=DATA.map(r=>Object.assign({},r)); loaded=true; render();
+})();
+</script>
+</body>
+</html>
