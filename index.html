@@ -186,6 +186,14 @@ tr.group-row[data-g="Zaxira"] td{background:var(--g-res-soft);border-left-color:
 .dcard .gt{font-size:11px;font-weight:600}
 .dcard .gt[data-g="Yanvar 2027"]{color:var(--g-jan)} .dcard .gt[data-g="Sentabr 2027"]{color:var(--g-sep)} .dcard .gt[data-g="Zaxira"]{color:var(--g-res)}
 @media (prefers-reduced-motion: reduce){tr.flash td{animation:none}.dcard:hover{transform:none}}
+/* live clock */
+.clock{display:grid;gap:6px;justify-items:center;text-align:center;padding:18px 12px;border-radius:16px;background:var(--surface);border:1px solid var(--line);box-shadow:0 10px 30px rgba(20,40,80,.08)}
+.clock .time{font-family:var(--font-display);font-weight:700;font-variant-numeric:tabular-nums;font-size:clamp(34px,9vw,84px);line-height:1;letter-spacing:-.02em;white-space:nowrap}
+.clock .time .ms{color:var(--u-red);font-size:.6em}
+.clock .time .sep{opacity:.35}
+.clock .date{color:var(--muted);font-size:14px}
+.clock .cd{font-family:var(--font-display);font-variant-numeric:tabular-nums;font-size:clamp(15px,3.6vw,22px);font-weight:600;color:var(--ink)}
+.clock .cd b{color:var(--u-red)}
 /* read-only view */
 .ro .del,.ro .tag{pointer-events:none}
 .ro .fit-stack button,.ro .st select,.ro .dl input{pointer-events:none}
@@ -204,6 +212,11 @@ tr.group-row[data-g="Zaxira"] td{background:var(--g-res-soft);border-left-color:
 <body class="ro">
 <div class="wrap">
   <div class="band" aria-hidden="true"></div>
+  <section class="clock" aria-label="Hozirgi vaqt">
+    <div class="time" id="clkTime">--:--:--<span class="ms">.000</span></div>
+    <div class="date" id="clkDate"></div>
+    <div class="cd" id="clkCd"></div>
+  </section>
   <header>
     <div>
       <h1>Universitet arizalari 2027</h1>
@@ -433,6 +446,31 @@ tr.group-row[data-g="Zaxira"] td{background:var(--g-res-soft);border-left-color:
     if(up) h+='<div class="chip next">Keyingi muddat: <b>'+esc(up.name)+'</b> · '+esc(fmtDate(up.deadline))+' ('+daysLeft(up.deadline)+' kun)</div>';
     el.innerHTML=h;
   }
+
+  // ---- live clock ----
+  const clkT=document.getElementById("clkTime"), clkD=document.getElementById("clkDate"), clkC=document.getElementById("clkCd");
+  const MON=["yanvar","fevral","mart","aprel","may","iyun","iyul","avgust","sentabr","oktabr","noyabr","dekabr"];
+  const WD=["yakshanba","dushanba","seshanba","chorshanba","payshanba","juma","shanba"];
+  const p2=n=>String(n).padStart(2,"0"), p3=n=>String(n).padStart(3,"0");
+  let lastDay=-1;
+  function nextTarget(){
+    const up=rows.filter(r=>["red","amber","green"].includes(urg(r))).sort((a,b)=>a.deadline<b.deadline?-1:1)[0];
+    return up?{name:up.name,t:new Date(up.deadline+"T23:59:59").getTime()}:null;
+  }
+  function tick(){
+    const d=new Date();
+    const sep='<span class="sep">:</span>';
+    clkT.innerHTML=p2(d.getHours())+sep+p2(d.getMinutes())+sep+p2(d.getSeconds())+'<span class="ms">.'+p3(d.getMilliseconds())+'</span>';
+    if(d.getDate()!==lastDay){lastDay=d.getDate(); clkD.textContent=d.getDate()+"-"+MON[d.getMonth()]+" "+d.getFullYear()+", "+WD[d.getDay()];}
+    const nt=loaded?nextTarget():null;
+    if(nt){
+      let ms=Math.max(0,nt.t-d.getTime());
+      const dd=Math.floor(ms/864e5); ms-=dd*864e5; const hh=Math.floor(ms/36e5); ms-=hh*36e5; const mm=Math.floor(ms/6e4); ms-=mm*6e4; const ss=Math.floor(ms/1e3); ms-=ss*1e3;
+      clkC.innerHTML=esc(nt.name)+" muddatigacha: <b>"+dd+" kun "+p2(hh)+":"+p2(mm)+":"+p2(ss)+"."+p3(ms)+"</b>";
+    } else clkC.textContent="";
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
 
   // ---- events ----
   tbody.addEventListener("click",e=>{
